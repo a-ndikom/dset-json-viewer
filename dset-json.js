@@ -45,6 +45,5 @@ document.getElementById("jsonfileinput").addEventListener("change", function() {
     });
 		};
     fileread.readAsText(file_to_read);
-    //update the header info 
 
   });
