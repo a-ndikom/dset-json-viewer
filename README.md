@@ -6,20 +6,18 @@ DataTables based HTML viewer for dataset-json files
 Please confirm details on "LICENSE" file.
 
 
-## Installation
-In progress.
+## Purpose
+This tool provides a simple, browser based, Excel style experience for revieiwng dataset-JSON data. The table rendering uses the https://datatables.net/ plug-in for jQuery Javascript library. DataTables is powerful, flexible, open source, easy to use and widely adopted.
 
 ## How to use it
-In progress
-
-## Examples
 In progress
 
 ## Contribution
 In progress
 
 ## References
-In progress
+--https://datatables.net/
+--https://jquery.com/
 
 ## Contact
 info@statskom.com
