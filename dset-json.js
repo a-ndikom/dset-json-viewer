@@ -1,6 +1,5 @@
 
 
-
 document.getElementById("jsonfileinput").addEventListener("change", function() {
   var file_to_read = document.getElementById("jsonfileinput").files[0];
   var fileread = new FileReader();
@@ -14,9 +13,45 @@ document.getElementById("jsonfileinput").addEventListener("change", function() {
     itemGroupData=myvar[datatype].itemGroupData[itemGroupDataKey]
     records =itemGroupData.records
     label =itemGroupData.label
+    //create a variable holding the actual data
     dataset =itemGroupData.itemData
-    //actual data is in cols
+    //create an array holding the column metadata 
     cols=itemGroupData.items
+    //parse column metadata to check for any date variables which will need to be converted
+    //maybe this could be improved to instead use the define
+
+
+//     let datevars  = cols.filter(function (e) {
+//     return e.name.slice(-2) ==='DT';
+// });
+//     console.log(datevars)
+    arrcols = []
+    for ( iter in cols) {
+      if (   cols[iter].name.slice(-2) ==='DT') {
+      arrcols.push(iter)
+      }
+    }
+    //convert legacy sas dates into iso format
+
+
+    var date = new Date('1960-01-01'),
+    d = date.getDate(),
+    m = date.getMonth(),
+    y = date.getFullYear();
+
+
+   for ( iter in dataset) {
+   	 for (vars in arrcols){
+   	 	dataset[iter][ arrcols[vars]  ]   = new Date(y, m, d+ dataset[iter][ arrcols[vars]  ] ).toISOString().split("T")[0]
+
+   	 }
+
+   	 
+
+    }
+
+
+
     $("#headerp").text('Dataset: ' + itemGroupData.label + " Records: " + records);
     // Extract the column names and labels load these into an array which can be used to assign table header
     var arr =[]
@@ -35,9 +70,9 @@ document.getElementById("jsonfileinput").addEventListener("change", function() {
       let obj = {};
       obj["title"] = cols[i].name + " ("+cols[i].label + ")" 
       arr.push(obj)
-      toglist = toglist +  '<a class="toggle-vis" data-column="' + i + '">'  +    cols[i].name  + '</a>-' 
+      toglist = toglist +  ' <a href="#" class="toggle-vis" data-column="' + i + '">'  +    cols[i].name  + '</a>' 
       }
-      console.log(toglist)
+
     $("#togglechild").append(toglist)
     $('a.toggle-vis').on('click', function (e) {
         e.preventDefault();
@@ -52,19 +87,56 @@ document.getElementById("jsonfileinput").addEventListener("change", function() {
 
 
 
+
+
+
+
+
+
+
+
+
+
     // destroy div containing the table if it exists 
     //destroy the div containing the column list to hide and recreate it
     if (typeof mytable !== 'undefined') {
       $('#mydiv2').remove();
-      $("#mydiv").append('<div id="mydiv2"><table id="example" class="display" width="100%"></table></div>');
+      $("#mydiv").append('<div id="mydiv2"><table id="mytable" class="display" width="100%"></table></div>');
 
     }
     //initialise the datatable 
-    mytable = $('#example').DataTable({
+    mytable = $('#mytable').DataTable({
       data: dataset,
       columns: arr,
     });
     };
+
+
+  //  $('#mytable').DataTable( {
+  //   columnDefs: [ {
+  //     targets: 10,
+  //     render: $.fn.dataTable.render.moment( 'X', 'Do MMM YY' )
+  //   } ]
+  // } );
+
+
+  //  $('#mytable').DataTable( {
+  //   columnDefs: [ {
+  //     targets: 11,
+  //     render: $.fn.dataTable.render.moment( 'X', 'Do MMM YY' )
+  //   } ]
+  // } );
+
+
+  //  $('#mytable').DataTable( {
+  //   columnDefs: [ {
+  //     targets: 12,
+  //     render: $.fn.dataTable.render.moment( 'X', 'Do MMM YY' )
+  //   } ]
+  // } );
+
+
+
     fileread.readAsText(file_to_read);
 
 

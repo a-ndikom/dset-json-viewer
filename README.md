@@ -12,12 +12,10 @@ This tool provides a simple, browser based, Excel style experience for revieiwng
 ## How to use it
 In progress
 
-## Contribution
-In progress
 
 ## References
---https://datatables.net/
---https://jquery.com/
+* https://datatables.net/
+* https://jquery.com/
 
 ## Contact
 info@statskom.com
