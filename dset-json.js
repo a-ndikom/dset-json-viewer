@@ -108,6 +108,14 @@ document.getElementById("jsonfileinput").addEventListener("change", function() {
     mytable = $('#mytable').DataTable({
       data: dataset,
       columns: arr,
+      dom: 'Bfrtip',
+      buttons: [
+	      'copyHtml5',
+	      'excelHtml5',
+	      'csvHtml5',
+	      'pdfHtml5'
+	      ]
+
     });
     };
 
