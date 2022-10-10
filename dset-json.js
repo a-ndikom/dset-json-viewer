@@ -21,15 +21,18 @@ document.getElementById("jsonfileinput").addEventListener("change", function() {
     //maybe this could be improved to instead use the define
 
 
-//     let datevars  = cols.filter(function (e) {
-//     return e.name.slice(-2) ==='DT';
-// });
-//     console.log(datevars)
-    arrcols = []
+    // create a list of date columns which can be used for date and datetime conversions
+    datecols = []
+    datetimecols = []
+
     for ( iter in cols) {
       if (   cols[iter].name.slice(-2) ==='DT') {
-      arrcols.push(iter)
+      datecols.push(iter)
       }
+      else if (   cols[iter].name.slice(-3) ==='DTM') {
+      datetimecols.push(iter)
+      }
+
     }
     //convert legacy sas dates into iso format
 
@@ -40,15 +43,15 @@ document.getElementById("jsonfileinput").addEventListener("change", function() {
     y = date.getFullYear();
 
 
-   for ( iter in dataset) {
-   	 for (vars in arrcols){
-   	 	dataset[iter][ arrcols[vars]  ]   = new Date(y, m, d+ dataset[iter][ arrcols[vars]  ] ).toISOString().split("T")[0]
-
-   	 }
-
+  for ( iter in dataset) {
+   	 for (vars in datecols){
+      if (dataset[iter][ datecols[vars]  ] !== null ){
+   	 	dataset[iter][ datecols[vars]  ]   = new Date(y, m, d+ dataset[iter][ datecols[vars]  ] ).toISOString().split("T")[0]
+   	  }
+    }
    	 
 
-    }
+  }
 
 
 
@@ -61,9 +64,7 @@ document.getElementById("jsonfileinput").addEventListener("change", function() {
     let objrownum = { };
     objrownum["title"] = "#"
     arr.push(objrownum)
-      $('#togglechild').empty();
 
-    toglist="Toggle columns:"
   
 
     for(var i = 1; i < cols.length; i++){
@@ -94,8 +95,13 @@ document.getElementById("jsonfileinput").addEventListener("change", function() {
     mytable = $('#mytable').DataTable({
       data: dataset,
       columns: arr,
-      dom: 'Bfrtip',
+ lengthMenu: [
+            [10, 25, 50, -1],
+            [10, 25, 50, 'All'],
+        ],    
+      dom: 'Bfr tip',
       buttons: [
+         'pageLength',
 	      'copyHtml5',
 	      'excelHtml5',
 	      'csvHtml5',
@@ -106,8 +112,6 @@ document.getElementById("jsonfileinput").addEventListener("change", function() {
     });
     };
 
-  // mytable.buttons().container()
-  //       .appendTo( '#example_wrapper .col-md-6:eq(0)' );
 
 
     fileread.readAsText(file_to_read);

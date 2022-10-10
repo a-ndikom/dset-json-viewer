@@ -17,6 +17,10 @@ This tool provides a simple, browser based, Excel style experience for revieiwng
 ## Supported data type conversions
 * SAS date to ISO date
 
+## Export
+* Tables can be exported as Excel, CSV or PDF
+* 
+
 ## References
 * https://datatables.net/
 * https://jquery.com/
