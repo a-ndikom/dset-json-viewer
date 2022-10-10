@@ -10,8 +10,12 @@ Please confirm details on "LICENSE" file.
 This tool provides a simple, browser based, Excel style experience for revieiwng dataset-JSON data. The table rendering uses the https://datatables.net/ plug-in for jQuery Javascript library. DataTables is powerful, flexible, open source, easy to use and widely adopted.
 
 ## How to use it
-In progress
+* Use file import button to select file to be read.
+* Drop down modal controls column visibility
+* Click on column header to filter
 
+## Supported data type conversions
+* SAS date to ISO date
 
 ## References
 * https://datatables.net/

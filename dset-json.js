@@ -52,7 +52,7 @@ document.getElementById("jsonfileinput").addEventListener("change", function() {
 
 
 
-    $("#headerp").text('Dataset: ' + itemGroupData.label + " Records: " + records);
+    $("#headerp").text('Dataset: ' + itemGroupData.label + " Data Type: " + datatype + " Records: " + records);
     // Extract the column names and labels load these into an array which can be used to assign table header
     var arr =[]
     var toglist =""
@@ -70,21 +70,7 @@ document.getElementById("jsonfileinput").addEventListener("change", function() {
       let obj = {};
       obj["title"] = cols[i].name + " ("+cols[i].label + ")" 
       arr.push(obj)
-      toglist = toglist +  ' <a href="#" class="toggle-vis" data-column="' + i + '">'  +    cols[i].name  + '</a>' 
       }
-
-    $("#togglechild").append(toglist)
-    $('a.toggle-vis').on('click', function (e) {
-        e.preventDefault();
- 
-        // Get the column API object
-        var column = mytable.column($(this).attr('data-column'));
- 
-        // Toggle the visibility
-        column.visible(!column.visible());
-    });
-
-
 
 
 
@@ -113,36 +99,15 @@ document.getElementById("jsonfileinput").addEventListener("change", function() {
 	      'copyHtml5',
 	      'excelHtml5',
 	      'csvHtml5',
-	      'pdfHtml5'
+	      'pdfHtml5',
+	      'colvis',
 	      ]
 
     });
     };
 
-
-  //  $('#mytable').DataTable( {
-  //   columnDefs: [ {
-  //     targets: 10,
-  //     render: $.fn.dataTable.render.moment( 'X', 'Do MMM YY' )
-  //   } ]
-  // } );
-
-
-  //  $('#mytable').DataTable( {
-  //   columnDefs: [ {
-  //     targets: 11,
-  //     render: $.fn.dataTable.render.moment( 'X', 'Do MMM YY' )
-  //   } ]
-  // } );
-
-
-  //  $('#mytable').DataTable( {
-  //   columnDefs: [ {
-  //     targets: 12,
-  //     render: $.fn.dataTable.render.moment( 'X', 'Do MMM YY' )
-  //   } ]
-  // } );
-
+  // mytable.buttons().container()
+  //       .appendTo( '#example_wrapper .col-md-6:eq(0)' );
 
 
     fileread.readAsText(file_to_read);
