@@ -55,7 +55,7 @@ document.getElementById("jsonfileinput").addEventListener("change", function() {
 
 
 
-    $("#headerp").text('Dataset: ' + itemGroupData.label + " Data Type: " + datatype + " Records: " + records);
+    $("#headerp").text('Dataset: ' + itemGroupData.label + ", Data Type: " + datatype + ", Records: " + records);
     // Extract the column names and labels load these into an array which can be used to assign table header
     var arr =[]
     var toglist =""
@@ -72,16 +72,6 @@ document.getElementById("jsonfileinput").addEventListener("change", function() {
       obj["title"] = cols[i].name + " ("+cols[i].label + ")" 
       arr.push(obj)
       }
-
-
-
-
-
-
-
-
-
-
 
 
     // destroy div containing the table if it exists 
