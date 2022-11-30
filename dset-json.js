@@ -81,6 +81,17 @@ document.getElementById("jsonfileinput").addEventListener("change", function() {
       $("#mydiv").append('<div id="mydiv2"><table id="mytable" class="display" width="100%"></table></div>');
 
     }
+
+
+    //setup custom button
+    $.fn.dataTable.ext.buttons.visual = {
+      text: 'Visualise',
+      action: function ( e, dt, node, config ) {
+          console.log("Helloe World!")
+      }
+  };
+
+
     //initialise the datatable 
     mytable = $('#mytable').DataTable({
       data: dataset,
@@ -97,6 +108,7 @@ document.getElementById("jsonfileinput").addEventListener("change", function() {
 	      'csvHtml5',
 	      'pdfHtml5',
 	      'colvis',
+        'visual'
 	      ]
 
     });
