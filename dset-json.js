@@ -1,21 +1,19 @@
-
-
 document.getElementById("jsonfileinput").addEventListener("change", function() {
   var file_to_read = document.getElementById("jsonfileinput").files[0];
   var fileread = new FileReader();
   fileread.onload = function(e) {
     var content = e.target.result;
-    var myvar = JSON.parse(content); 
+    var myvar = JSON.parse(content);
     //Extract useful metadata from the json
     datatype =   Object.keys(myvar)[0]
     metaDataVersionOID = myvar[datatype].metaDataVersionOID
-    itemGroupDataKey=	Object.keys(myvar[datatype].itemGroupData)[0]
+    itemGroupDataKey=Object.keys(myvar[datatype].itemGroupData)[0]
     itemGroupData=myvar[datatype].itemGroupData[itemGroupDataKey]
     records =itemGroupData.records
     label =itemGroupData.label
     //create a variable holding the actual data
     dataset =itemGroupData.itemData
-    //create an array holding the column metadata 
+    //create an array holding the column metadata
     cols=itemGroupData.items
     //parse column metadata to check for any date variables which will need to be converted
     //maybe this could be improved to instead use the define
@@ -44,20 +42,29 @@ document.getElementById("jsonfileinput").addEventListener("change", function() {
 
 
   for ( iter in dataset) {
-   	 for (vars in datecols){
+    for (vars in datecols){
       if (dataset[iter][ datecols[vars]  ] !== null ){
-   	 	dataset[iter][ datecols[vars]  ]   = new Date(y, m, d+ dataset[iter][ datecols[vars]  ] ).toISOString().split("T")[0]
-   	  }
+      dataset[iter][ datecols[vars]  ]   = new Date(y, m, d+ dataset[iter][ datecols[vars]  ] ).toISOString().split("T")[0]
+     }
     }
-   	 
+   
 
   }
 
+var col =["apple", "apple", "pear"];
 
+
+const occurrences = col.reduce(function (acc, curr) {
+  return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
+}, {});
+
+console.log(occurrences) // => {2: 5, 4: 1, 5: 3, 9: 1}
 
     $("#headerp").text('Dataset: ' + itemGroupData.label + ", Data Type: " + datatype + ", Records: " + records);
     // Extract the column names and labels load these into an array which can be used to assign table header
     var arr =[]
+//create an array to hold the custom buttons
+var buttonarray =  []
     var toglist =""
 
     var i = 1;
@@ -65,16 +72,80 @@ document.getElementById("jsonfileinput").addEventListener("change", function() {
     objrownum["title"] = "#"
     arr.push(objrownum)
 
-  
+//Create function which can be used to plot data
+function myfunc(colnum,colname,coltype){
+
+var coldata = dataset.map(function(value,index) { return value[colnum]; });
+
+$('#exampleModalLabel').text(colname);
+
+$('#exampleModal').modal("show");
+    if (coltype != "string") {
+
+
+    var trace1 = {
+    x: coldata,
+    type: 'histogram',
+    }  ;
+
+    var trace2 = {
+    x: coldata,
+    type: 'box',
+  xaxis: 'x2',
+  yaxis: 'y2',
+    }  ;
+
+var data = [trace1, trace2];
+
+var layout = {
+  grid: {rows: 1, columns: 2, pattern: 'independent'},
+   showlegend: false
+};
+
+Plotly.newPlot('mofig', data, layout);
+
+var mystats = new Object();
+
+mystats.mean = Math.round(10*d3.mean(coldata))/10;
+mystats.median = Math.round(10*d3.median(coldata))/10;
+mystats.minmax = Math.round(10*d3.min(coldata))/10 + "," + Math.round(10*d3.max(coldata))/10;
+mystats.std = Math.round(100*d3.deviation(coldata))/100;
+
+var statsum = "<ul > <li>Mean:  "+  mystats.mean+ "</li> <li>Median: " +  mystats.median + " </li>  <li>Min, Max: "+  mystats.minmax + "</li>   <li>STD:  + " +   mystats.std + "</li></ul>";
+
+$('#mostat').html(statsum)
+
+}
+}
+ 
 
     for(var i = 1; i < cols.length; i++){
       let obj = {};
-      obj["title"] = cols[i].name + " ("+cols[i].label + ")" 
+  let buttonobj = {};
+  let myvar = cols[i].name
+  let mylabel = cols[i].label
+  let myvaltype = cols[i].type
+  
+  let myvalnum = i
+
+  
+  
+      obj["title"] = cols[i].name + " ("+mylabel + ")"
+  //used for the visualisation buttons
+  buttonobj["text"] =  myvar;
+
+    buttonobj["action"] = function ( e, dt, node, config ) {
+                           myfunc(myvalnum,mylabel,myvaltype)}
+ 
+  //push values out to arrays
       arr.push(obj)
+  buttonarray.push(buttonobj)
       }
 
 
-    // destroy div containing the table if it exists 
+
+
+    // destroy div containing the table if it exists
     //destroy the div containing the column list to hide and recreate it
     if (typeof mytable !== 'undefined') {
       $('#mydiv2').remove();
@@ -82,17 +153,7 @@ document.getElementById("jsonfileinput").addEventListener("change", function() {
 
     }
 
-
-    //setup custom button
-    $.fn.dataTable.ext.buttons.visual = {
-      text: 'Visualise',
-      action: function ( e, dt, node, config ) {
-          console.log("Helloe World!")
-      }
-  };
-
-
-    //initialise the datatable 
+    //initialise the datatable
     mytable = $('#mytable').DataTable({
       data: dataset,
       columns: arr,
@@ -103,13 +164,18 @@ document.getElementById("jsonfileinput").addEventListener("change", function() {
       dom: 'Bfr tip',
       buttons: [
          'pageLength',
-	      'copyHtml5',
-	      'excelHtml5',
-	      'csvHtml5',
-	      'pdfHtml5',
-	      'colvis',
-        'visual'
-	      ]
+      'copyHtml5',
+      'excelHtml5',
+      'csvHtml5',
+      'pdfHtml5',
+      'colvis',
+           {
+            extend: 'collection',
+            text: 'Explore',
+buttons: buttonarray,
+autoClose: true,
+   }
+      ]
 
     });
     };
