@@ -51,14 +51,7 @@ document.getElementById("jsonfileinput").addEventListener("change", function() {
 
   }
 
-var col =["apple", "apple", "pear"];
 
-
-const occurrences = col.reduce(function (acc, curr) {
-  return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
-}, {});
-
-console.log(occurrences) // => {2: 5, 4: 1, 5: 3, 9: 1}
 
     $("#headerp").text('Dataset: ' + itemGroupData.label + ", Data Type: " + datatype + ", Records: " + records);
     // Extract the column names and labels load these into an array which can be used to assign table header
@@ -73,15 +66,13 @@ var buttonarray =  []
     arr.push(objrownum)
 
 //Create function which can be used to plot data
-function myfunc(colnum,colname,coltype){
+function myfuncnum(colnum,colname,coltype){
 
-var coldata = dataset.map(function(value,index) { return value[colnum]; });
+//  var coldata = dataset.map(function(value,index) { return value[colnum]; });
+ var coldata =mytable.column( colnum, {order:'index', search:'applied'} ).data().toArray();
 
 $('#exampleModalLabel').text(colname);
-
 $('#exampleModal').modal("show");
-    if (coltype != "string") {
-
 
     var trace1 = {
     x: coldata,
@@ -105,19 +96,71 @@ var layout = {
 Plotly.newPlot('mofig', data, layout);
 
 var mystats = new Object();
+mystats.n =coldata.length
 
 mystats.mean = Math.round(10*d3.mean(coldata))/10;
 mystats.median = Math.round(10*d3.median(coldata))/10;
 mystats.minmax = Math.round(10*d3.min(coldata))/10 + "," + Math.round(10*d3.max(coldata))/10;
 mystats.std = Math.round(100*d3.deviation(coldata))/100;
 
-var statsum = "<ul > <li>Mean:  "+  mystats.mean+ "</li> <li>Median: " +  mystats.median + " </li>  <li>Min, Max: "+  mystats.minmax + "</li>   <li>STD:  + " +   mystats.std + "</li></ul>";
+var statsum = "<ul > <li>n:  "+  mystats.n+ "<li>Mean:  "+  mystats.mean+ "</li> <li>Median: " +  mystats.median + " </li>  <li>Min, Max: "+  mystats.minmax + "</li>   <li>STD:  + " +   mystats.std + "</li></ul>";
 
 $('#mostat').html(statsum)
 
 }
+
+
+function myfuncchar(colnum,colname,coltype){
+
+  $('#exampleModalLabel').text(colname);
+  $('#exampleModal').modal("show");
+  var coldata =mytable.column( colnum, {order:'index', search:'applied'} ).data().toArray();
+  //get the frequency counts by group
+  const occurrences = coldata.reduce(function (acc, curr) {
+    return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
+  }, {});
+  //get the denominator
+  
+  let denom = 0;
+  for (const value of Object.values(occurrences)) {
+    denom += value;
+  };
+  var statsum ="xx";
+
+  // var statsum = "<table>
+  //                  <thead>
+  //                    <td>
+  //                    </td>
+  //                    <td>
+  //                       n
+  //                    </td>
+  //                   </thead>
+  //                   <tbody>";
+  xvals =  Object.keys(occurrences)
+  yvals =  Object.values(occurrences) 
+for (i in xvals) {
+    statsum+="<td>" + xvals[i] + "</td>"  + "<td>" + yvals[i]  + "</td>" 
+
+  }
+
+  statsum+="</tbody></table>"
+
+console.log(statsum)
+  {/* $('#mostat').html(statsum) */}
+
+  var figdata = [
+    {
+      x: Object.keys(occurrences),
+      y: Object.values(occurrences),
+      type: 'bar'
+    }
+  ];
+  Plotly.newPlot('mofig', figdata);
+
+
+
+
 }
- 
 
     for(var i = 1; i < cols.length; i++){
       let obj = {};
@@ -133,10 +176,16 @@ $('#mostat').html(statsum)
       obj["title"] = cols[i].name + " ("+mylabel + ")"
   //used for the visualisation buttons
   buttonobj["text"] =  myvar;
-
+  if (myvaltype  != "string"){
     buttonobj["action"] = function ( e, dt, node, config ) {
-                           myfunc(myvalnum,mylabel,myvaltype)}
- 
+                           myfuncnum(myvalnum,mylabel,myvaltype)}
+    
+  }
+  else {
+    buttonobj["action"] = function ( e, dt, node, config ) {
+      myfuncchar(myvalnum,mylabel,myvaltype)}
+    
+  }
   //push values out to arrays
       arr.push(obj)
   buttonarray.push(buttonobj)
