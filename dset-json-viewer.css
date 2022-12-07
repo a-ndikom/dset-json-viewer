@@ -7,3 +7,21 @@ background: CornflowerBlue;
 filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr="#f0f0f0", EndColorStr="#dadada");
 box-shadow: inset 1px 1px 3px #666;
 }
+
+
+
+#mydiv{margin-top: 20px;margin-left: 20px; margin-right: 20px;}
+
+#headerdiv{margin-top: 10px;margin-bottom: 10px;    }
+
+.modal-dialog {
+    height: 90%; /* = 90% of the .modal-backdrop block = %90 of the screen */
+  }
+  .modal-content {
+    height: 100%; /* = 100% of the .modal-dialog block */
+  }
+
+  .modal-body{
+
+    overflow-y: auto;
+}

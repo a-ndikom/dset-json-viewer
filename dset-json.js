@@ -16,9 +16,6 @@ document.getElementById("jsonfileinput").addEventListener("change", function() {
     //create an array holding the column metadata
     cols=itemGroupData.items
     //parse column metadata to check for any date variables which will need to be converted
-    //maybe this could be improved to instead use the define
-
-
     // create a list of date columns which can be used for date and datetime conversions
     datecols = []
     datetimecols = []
@@ -33,21 +30,18 @@ document.getElementById("jsonfileinput").addEventListener("change", function() {
 
     }
     //convert legacy sas dates into iso format
-
-
     var date = new Date('1960-01-01'),
     d = date.getDate(),
     m = date.getMonth(),
     y = date.getFullYear();
 
 
-  for ( iter in dataset) {
-    for (vars in datecols){
-      if (dataset[iter][ datecols[vars]  ] !== null ){
-      dataset[iter][ datecols[vars]  ]   = new Date(y, m, d+ dataset[iter][ datecols[vars]  ] ).toISOString().split("T")[0]
-     }
-    }
-   
+    for ( iter in dataset) {
+      for (vars in datecols){
+        if (dataset[iter][ datecols[vars]  ] !== null ){
+        dataset[iter][ datecols[vars]  ]   = new Date(y, m, d+ dataset[iter][ datecols[vars]  ] ).toISOString().split("T")[0]
+      }
+      } 
 
   }
 
@@ -56,8 +50,8 @@ document.getElementById("jsonfileinput").addEventListener("change", function() {
     $("#headerp").text('Dataset: ' + itemGroupData.label + ", Data Type: " + datatype + ", Records: " + records);
     // Extract the column names and labels load these into an array which can be used to assign table header
     var arr =[]
-//create an array to hold the custom buttons
-var buttonarray =  []
+    //create an array to hold the custom buttons
+    var buttonarray =  []
     var toglist =""
 
     var i = 1;
@@ -84,13 +78,19 @@ $('#exampleModal').modal("show");
     type: 'box',
   xaxis: 'x2',
   yaxis: 'y2',
-    }  ;
+  y2axis_title:""
+    } 
+    
+    
+    ;
 
 var data = [trace1, trace2];
 
 var layout = {
   grid: {rows: 1, columns: 2, pattern: 'independent'},
-   showlegend: false
+  width: 800,
+  height: 600,
+  showlegend: false,
 };
 
 Plotly.newPlot('mofig', data, layout);
@@ -104,7 +104,7 @@ mystats.minmax = Math.round(10*d3.min(coldata))/10 + "," + Math.round(10*d3.max(
 mystats.std = Math.round(100*d3.deviation(coldata))/100;
 
 var statsum = "<ul > <li>n:  "+  mystats.n+ "<li>Mean:  "+  mystats.mean+ "</li> <li>Median: " +  mystats.median + " </li>  <li>Min, Max: "+  mystats.minmax + "</li>   <li>STD:  + " +   mystats.std + "</li></ul>";
-
+//inset the generated html into the div
 $('#mostat').html(statsum)
 
 }
@@ -127,26 +127,22 @@ function myfuncchar(colnum,colname,coltype){
   };
   var statsum ="xx";
 
-  // var statsum = "<table>
-  //                  <thead>
-  //                    <td>
-  //                    </td>
-  //                    <td>
-  //                       n
-  //                    </td>
-  //                   </thead>
-  //                   <tbody>";
+  var statsum = "<table class ='table table-striped  table-hover'><thead><th></th><th>n</th><th>%</th></thead><tbody>";
   xvals =  Object.keys(occurrences)
   yvals =  Object.values(occurrences) 
-for (i in xvals) {
-    statsum+="<td>" + xvals[i] + "</td>"  + "<td>" + yvals[i]  + "</td>" 
+  for (i in xvals) {
+    perc = 10*Math.round(1000* yvals[i] /denom)/100    ;
+    statsum+="<tr><td>" + xvals[i] + "</td>"  + "<td>" + yvals[i]  + "</td> <td>" + perc + "</td></tr>" 
 
   }
 
   statsum+="</tbody></table>"
-
-console.log(statsum)
-  {/* $('#mostat').html(statsum) */}
+ 
+  console.log(statsum)
+  $('#mostat').html(statsum) 
+  var layout ={
+    xaxis : {automargin:true}
+  }
 
   var figdata = [
     {
@@ -155,41 +151,34 @@ console.log(statsum)
       type: 'bar'
     }
   ];
-  Plotly.newPlot('mofig', figdata);
-
-
-
-
-}
-
-    for(var i = 1; i < cols.length; i++){
-      let obj = {};
-  let buttonobj = {};
-  let myvar = cols[i].name
-  let mylabel = cols[i].label
-  let myvaltype = cols[i].type
-  
-  let myvalnum = i
-
-  
-  
-      obj["title"] = cols[i].name + " ("+mylabel + ")"
-  //used for the visualisation buttons
-  buttonobj["text"] =  myvar;
-  if (myvaltype  != "string"){
-    buttonobj["action"] = function ( e, dt, node, config ) {
-                           myfuncnum(myvalnum,mylabel,myvaltype)}
-    
+  Plotly.newPlot('mofig', figdata,layout);
   }
-  else {
-    buttonobj["action"] = function ( e, dt, node, config ) {
+
+  //Create the visualisation button array 
+  for(var i = 1; i < cols.length; i++){
+    let obj = {};
+    let buttonobj = {};
+    let myvar = cols[i].name
+    let mylabel = cols[i].label
+    let myvaltype = cols[i].type
+    
+    let myvalnum = i
+    obj["title"] = cols[i].name + " ("+mylabel + ")"
+    //used for the visualisation buttons
+    buttonobj["text"] =  myvar;
+    if (myvaltype  != "string"){
+      buttonobj["action"] = function ( e, dt, node, config ) {
+                            myfuncnum(myvalnum,mylabel,myvaltype)}
+      
+    }
+    else {
+      buttonobj["action"] = function ( e, dt, node, config ) {
       myfuncchar(myvalnum,mylabel,myvaltype)}
-    
-  }
-  //push values out to arrays
-      arr.push(obj)
-  buttonarray.push(buttonobj)
-      }
+    }
+    //push values out to arrays
+    arr.push(obj)
+    buttonarray.push(buttonobj)
+    }
 
 
 
@@ -206,31 +195,28 @@ console.log(statsum)
     mytable = $('#mytable').DataTable({
       data: dataset,
       columns: arr,
- lengthMenu: [
+      lengthMenu: [
             [10, 25, 50, -1],
             [10, 25, 50, 'All'],
         ],    
       dom: 'Bfr tip',
       buttons: [
-         'pageLength',
-      'copyHtml5',
-      'excelHtml5',
-      'csvHtml5',
-      'pdfHtml5',
-      'colvis',
+        'pageLength',
+        'copyHtml5',
+        'excelHtml5',
+        'csvHtml5',
+        'pdfHtml5',
+        'colvis',
            {
             extend: 'collection',
             text: 'Explore',
-buttons: buttonarray,
-autoClose: true,
-   }
-      ]
+            buttons: buttonarray,
+            autoClose: true,
+           }
+       ]
 
     });
     };
-
-
-
     fileread.readAsText(file_to_read);
 
 

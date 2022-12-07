@@ -23,33 +23,36 @@
   <body class="d-flex flex-column h-100">
     <div id ="mydiv" class="container-fluid">
       <h3>Dataset-JSON viewer </h3>
-      <input type="file" id="jsonfileinput" />		
-      <p id ="headerp"></p>
-      <div id = "togglechild">		
+
+
+      <div class ="row">		
+        <input type="file" id="jsonfileinput" class ="filebutton" />		
       </div>
+      <div class ="row" id="headerdiv">		
+        <p id ="headerp"></p>
+      </div>     
       <div id="mydiv2">
         <table id="mytable" class="display" width="100%"></table>
       </div>
     </div>
-	<div id = "myDiv">
+
 	  
 	</div>
 	
 	
 <!-- Modal -->
 <div class="modal fade " id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-xl">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header d-flex justify-content-center">
         <h5 class="modal-title " id="exampleModalLabel"> </h5>
       </div>
       <div class="modal-body" id = "modid">
 	    <div class = "row">
-	      <div class = "col-8" id = "mofig">
+	      <div class = "col-9" id = "mofig">
 		    </div>				
-        <div class = "col-4 d-flex align-items-center" " >
-          <div   id = "mostat"></div>
-
+        <div class = "col-3 d-flex align-items-center " id = "mostat">
+          <!-- <div   id = "mostat"></div> -->
 		   </div>
 		  </div>
 		
@@ -62,10 +65,8 @@
 </div>
 
 	
-    <footer class="footer mt-auto py-3 bg-dark">
-      <div class="container">
-        <span class="text-light">A dataset-JSON viewer by <a href="http://statskom.com/">Statskom</a> </span>
-      </div>
+    <footer class="footer mt-auto py-2 bg-dark">
+      <span class="text-light" style ="margin-left: 35px">A dataset-JSON viewer by <a href="http://statskom.com/">Statskom</a> </span>
     </footer>
 
   </body>
